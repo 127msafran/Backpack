@@ -6,4 +6,7 @@ npx expo start
 ```
 
 # iOS testing
-Run `npx expo start --tunnel` to start the server and generate a qr code for mobile testing
+Run this command to start the server and generate a qr code for mobile testing
+```bash
+npx expo start --tunnel
+```
