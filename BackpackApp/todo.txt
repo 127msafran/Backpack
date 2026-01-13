@@ -1,0 +1,3 @@
+- Create home page
+- Create add assignment
+- Create schedule page
