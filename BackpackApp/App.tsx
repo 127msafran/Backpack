@@ -1,77 +1,65 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Pressable, Modal } from 'react-native';
-import { useState } from 'react';
+import { StyleSheet, Text, View, Pressable, Modal, Platform } from 'react-native';
+import { createNativeBottomTabNavigator } from '@react-navigation/bottom-tabs/unstable';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { NavigationContainer } from '@react-navigation/native';
+import Assignments from './pages/Assignments';
+import Home from './pages/Home';
+import Schedule from './pages/Schedule';
 
 export default function App() {
-  const [modalVisible, setModalVisible] = useState(false);
-  
+  const NativeTabs = createNativeBottomTabNavigator();
+  const Drawer = createDrawerNavigator();
+  const [color, setColor] = useState('red');
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <View
-            style={{
-              margin: 20,
-              backgroundColor: 'white',
-              borderRadius: 20,
-              padding: 35,
-              alignItems: 'center',
-              shadowColor: '#000',
-              shadowOffset: {
-                width: 0,
-                height: 2,
-              },
-              shadowOpacity: 0.25,
-              shadowRadius: 4,
-              elevation: 5,
-            }}>
-            <Text>This is a modal!</Text>
-            <Pressable
-              style={{
-                height: 44,
-                width:180,
-                backgroundColor: 'lightblue',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginTop: 20,
-                borderRadius: 10
-              }}
-              onPress={() => setModalVisible(!modalVisible)}>
-              <Text>Close Modal</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
-      <Pressable
-        style={{
-          height: 50,
-          width:200,
-          backgroundColor: 'lightblue',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginTop: 20,
-          borderRadius: 10
-        }}
-        onPress={() => setModalVisible(true)}
-        hitSlop={{ top: 100, bottom: 100, left: 10, right: 10 }}
-      >
-        <Text>Open Modal</Text>
-      </Pressable>
+    <NavigationContainer>
       <StatusBar style="auto" />
-    </View>
+        <NativeTabs.Navigator initialRouteName="Home">
+          <NativeTabs.Screen name="Home" component={Home} options={{
+            tabBarLabel: 'Home',
+            tabBarIcon: Platform.select({
+              ios: {
+                type: 'sfSymbol',
+                name: 'house',
+              },
+              android: {
+                type: 'drawableResource',
+                name: 'heart_icon',
+              }
+            }),
+            tabBarActiveTintColor: 'red',
+          }} />
+          <NativeTabs.Screen name="Assignments" component={Assignments} options={{
+            tabBarLabel: 'Assignments',
+            tabBarIcon: Platform.select({
+              ios: {
+                type: 'sfSymbol',
+                name: 'doc.text',
+              }, android: {
+                type: 'drawableResource',
+                name: 'heart_icon',
+              },
+            }),
+            tabBarActiveTintColor: 'red',
+          }} />
+          <NativeTabs.Screen name="Schedule" component={Schedule} options={{
+            tabBarLabel: 'Schedule',
+            tabBarIcon: Platform.select({
+              ios: {
+                type: 'sfSymbol',
+                name: 'calendar',
+              },
+              android: {
+                type: 'drawableResource',
+                name: 'heart_icon',
+              },
+            }),
+            tabBarActiveTintColor: 'red',
+        }} />
+        </NativeTabs.Navigator>
+    </NavigationContainer>
   );
 }
 
