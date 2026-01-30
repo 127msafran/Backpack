@@ -1,0 +1,10 @@
+{
+  "name": "Backpack Dev Environment",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.cwd": "/workspaces/Backpack/BackpackApp"
+      }
+    }
+  }
+}
