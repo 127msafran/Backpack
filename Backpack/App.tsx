@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Pressable, Modal, Platform } from 'react-native';
 import { createNativeBottomTabNavigator } from '@react-navigation/bottom-tabs/unstable';
-import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import Assignments from './pages/Assignments';
 import Home from './pages/Home';
@@ -10,7 +9,6 @@ import Schedule from './pages/Schedule';
 
 export default function App() {
   const NativeTabs = createNativeBottomTabNavigator();
-  const Drawer = createDrawerNavigator();
   const [color, setColor] = useState('red');
 
   return (
