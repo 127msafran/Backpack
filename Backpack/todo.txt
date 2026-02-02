@@ -1,3 +1,5 @@
-- Create home page
+- Create home page (done)
+    - Still need to add styles to homepage
+    - Still need to add main functionality as well
 - Create add assignment
 - Create schedule page
