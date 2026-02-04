@@ -1,9 +1,8 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Platform, Image } from 'react-native';
+import { Platform} from 'react-native';
 import { createNativeBottomTabNavigator } from '@react-navigation/bottom-tabs/unstable';
 import { NavigationContainer } from '@react-navigation/native';
-import { MaterialIcons } from '@expo/vector-icons';
 import Assignments from './pages/Assignments';
 import Home from './pages/Home';
 import Schedule from './pages/Schedule';
@@ -24,9 +23,9 @@ export default function App() {
                   name: 'house',
                 },
                 android: {
-                  type: 'image',
-                  source: require('./assets/home_icon.png'),
-                }
+                  type: 'drawableResource',
+                  name: 'heart_icon',
+                },
               }),
               tabBarActiveTintColor: 'red',
             }} />
