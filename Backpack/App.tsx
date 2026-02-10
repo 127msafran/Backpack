@@ -1,14 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Platform} from 'react-native';
+import { Platform, StyleSheet, Dimensions, View } from 'react-native';
 import { createNativeBottomTabNavigator } from '@react-navigation/bottom-tabs/unstable';
 import { NavigationContainer } from '@react-navigation/native';
+import Animated, { useSharedValue, withDelay, withTiming, Easing, useAnimatedStyle } from 'react-native-reanimated';
 import Assignments from './pages/Assignments';
 import Home from './pages/Home';
 import Schedule from './pages/Schedule';
 
+const { width, height } = Dimensions.get('window');
+const screenDiagonal = Math.sqrt(width ** 2 + height ** 2);
+
 export default function App() {
   const NativeTabs = createNativeBottomTabNavigator();
+  const scale = useSharedValue(1);
+
+  useEffect(() => {
+    scale.value = withDelay(3000, withTiming(0, {duration: 1000, easing: Easing.inOut(Easing.ease)}));
+  }, []);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }]
+  }));
 
   return (
     <>
@@ -23,8 +36,8 @@ export default function App() {
                   name: 'house',
                 },
                 android: {
-                  type: 'drawableResource',
-                  name: 'heart_icon',
+                  type: 'resource',
+                  name: 'house_icon',
                 },
               }),
               tabBarActiveTintColor: 'red',
@@ -36,7 +49,7 @@ export default function App() {
                   type: 'sfSymbol',
                   name: 'doc.text',
                 }, android: {
-                  type: 'drawableResource',
+                  type: 'resource',
                   name: 'heart_icon',
                 },
               }),
@@ -47,10 +60,10 @@ export default function App() {
               tabBarIcon: Platform.select({
                 ios: {
                   type: 'sfSymbol',
-                  name: 'calendar',
+                  name: 'app',
                 },
                 android: {
-                  type: 'drawableResource',
+                  type: 'resource',
                   name: 'heart_icon',
                 },
               }),
@@ -58,6 +71,19 @@ export default function App() {
           }} />
           </NativeTabs.Navigator>
       </NavigationContainer>
+      <Animated.View style={[styles.circle, animatedStyle, {backgroundColor: 'red'}]} />
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  circle: {
+    position: 'absolute',
+    width: screenDiagonal,
+    height: screenDiagonal,
+    borderRadius: screenDiagonal / 2,
+    top: height / 2 - screenDiagonal / 2,
+    left: width / 2 - screenDiagonal / 2,
+    zIndex: 1000,
+  }
+});
