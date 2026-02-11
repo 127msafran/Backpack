@@ -16,7 +16,7 @@ export default function App() {
   const scale = useSharedValue(1);
 
   useEffect(() => {
-    scale.value = withDelay(1000, withTiming(0, {duration: 1000, easing: Easing.in(Easing.ease)}));
+    scale.value = withDelay(1000, withTiming(0, {duration: 1000, easing: Easing.inOut(Easing.ease)}));
   }, []);
 
   const animatedStyle = useAnimatedStyle(() => ({
