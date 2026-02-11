@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Platform, StyleSheet, Dimensions, View } from 'react-native';
+import { Platform, StyleSheet, Dimensions, Image, View } from 'react-native';
 import { createNativeBottomTabNavigator } from '@react-navigation/bottom-tabs/unstable';
 import { NavigationContainer } from '@react-navigation/native';
 import Animated, { useSharedValue, withDelay, withTiming, Easing, useAnimatedStyle } from 'react-native-reanimated';
@@ -16,7 +16,7 @@ export default function App() {
   const scale = useSharedValue(1);
 
   useEffect(() => {
-    scale.value = withDelay(3000, withTiming(0, {duration: 1000, easing: Easing.inOut(Easing.ease)}));
+    scale.value = withDelay(1000, withTiming(0, {duration: 1000, easing: Easing.in(Easing.ease)}));
   }, []);
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -71,7 +71,13 @@ export default function App() {
           }} />
           </NativeTabs.Navigator>
       </NavigationContainer>
-      <Animated.View style={[styles.circle, animatedStyle, {backgroundColor: 'red'}]} />
+      <Animated.View style={[styles.circle, animatedStyle, {backgroundColor: 'red'}]}>
+        <Image
+          source={require('./assets/logo.png')}
+          style={styles.logo}
+          resizeMode='contain'
+        />
+      </Animated.View>
     </>
   );
 }
@@ -85,5 +91,11 @@ const styles = StyleSheet.create({
     top: height / 2 - screenDiagonal / 2,
     left: width / 2 - screenDiagonal / 2,
     zIndex: 1000,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logo: {
+    width: 250,
+    height: 250,
   }
 });

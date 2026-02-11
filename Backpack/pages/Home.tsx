@@ -2,9 +2,6 @@ import { View, Text, StyleSheet, Button, Modal, Pressable, Dimensions } from 're
 import Animated, { useSharedValue, withTiming, Easing, useAnimatedStyle } from 'react-native-reanimated';
 import { useState, useEffect, use } from 'react';
 
-const { width, height } = Dimensions.get('window');
-const screenDiagonal = Math.sqrt(width ** 2 + height ** 2);
-
 export default function Home() {
   const [favColor, setFavColor] = useState('red');
   const [loggedIn, setLoggedIn] = useState(false);
@@ -143,14 +140,5 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 5,
     margin: 10,
-  },
-  circle: {
-    position: 'absolute',
-    width: screenDiagonal,
-    height: screenDiagonal,
-    borderRadius: screenDiagonal / 2,
-    top: height / 2 - screenDiagonal / 2,
-    left: width / 2 - screenDiagonal / 2,
-    zIndex: 1000,
   }
 });
