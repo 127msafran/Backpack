@@ -118,7 +118,9 @@ export default function Home() {
           <Button title="Log In" onPress={handleLogin} />
         </View>
       </Modal>*/}
-      <Text>Hi</Text>
+      <View style={styles.container}>
+        <Text>Home Page</Text>
+      </View>
     </>
   );
 }
