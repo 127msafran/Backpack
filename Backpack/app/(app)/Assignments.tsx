@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet} from 'react-native';
 
-export default function Schedule() {
+export default function Assignments() {
     
 
     return (
         <View style={styles.container}>
-            <Text>Schedule Page</Text>
+            <Text>Assignments Page</Text>
         </View>
     );
 }
@@ -14,7 +14,6 @@ export default function Schedule() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },
