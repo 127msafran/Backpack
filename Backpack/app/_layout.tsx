@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
-import { Slot, useRouter } from 'expo-router';
+import { useEffect, useRef, useState } from 'react';
+import { Slot, useRouter, Redirect } from 'expo-router';
 import { supabase } from '../lib/supabase';
 import { Session } from '@supabase/supabase-js';
 import { useFonts, Comfortaa_400Regular, Comfortaa_700Bold } from '@expo-google-fonts/comfortaa';
 import { Nunito_400Regular, Nunito_700Bold } from '@expo-google-fonts/nunito';
 import { Anton_400Regular } from '@expo-google-fonts/anton';
+import { Feather } from '@expo/vector-icons';
 
 export default function RootLayout() {
     const [session, setSession] = useState<Session | null>(null);
@@ -14,7 +15,8 @@ export default function RootLayout() {
         Comfortaa_700Bold,
         Nunito_400Regular,
         Nunito_700Bold,
-        Anton_400Regular
+        Anton_400Regular,
+        ...Feather.font
     });
     const router = useRouter();
 
@@ -29,18 +31,16 @@ export default function RootLayout() {
         });
     }, []);
 
-    useEffect(() => {
-        if (loading) return;
-        if (session) {
-            router.replace('/(app)');
-        } else {
-            router.replace('/(auth)/login');
-        }
-    }, [session, loading]);
+    if (loading || !fontsLoaded) return null;
 
-    if (!fontsLoaded) return null;
+    if (!session) {
+        return (
+            <>
+                <Slot />
+                <Redirect href="/(auth)/login" />
+            </>
+        );
+}
 
-    return (
-        <Slot screenOptions={{ headerShown: false }} />
-    );
+    return <Slot />;
 }

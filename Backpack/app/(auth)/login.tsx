@@ -1,18 +1,20 @@
 import { TextInput, Text, View, StyleSheet, Button } from 'react-native';
 import { useState } from 'react';
 import { supabase } from '../../lib/supabase';
+import { useRouter } from 'expo-router';
 
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const router = useRouter();
 
     async function signIn() {
         setLoading(true);
         try {
             const { error } = await supabase.auth.signInWithPassword({ email, password });
             if (error) window.alert('Error: ' + error.message);
-            else window.alert('Signed in!');
+            else router.replace('/(app)');
         } catch (e) {
             window.alert('Unexpected error: ' + JSON.stringify(e));
         }
@@ -22,7 +24,7 @@ export default function Login() {
     async function signUp() {
         setLoading(true);
         try {
-            const { error } = await supabase.auth.signUp({ email, password });
+            const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: 'https://psychic-space-parakeet-5gg5rv564rvvc7j7w-8081.app.github.dev/'} });
             if (error) window.alert('Error: ' + error.message);
             else window.alert('Check your email for a confirmation link!');
         } catch (e) {

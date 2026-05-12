@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, Text, Button, Modal, Pressable, FlatList, ScrollView} from 'react-native';
+import { StyleSheet, View, Text, Button, Modal, Pressable, FlatList, ScrollView, ActivityIndicator } from 'react-native';
 import Animated, { useSharedValue, withDelay, withTiming, Easing, useAnimatedStyle } from 'react-native-reanimated';
 import { supabase } from '../../lib/supabase'
 import FormatTime from '../../components/FormatTime';
@@ -215,9 +215,9 @@ export default function Index() {
                 </>
               )}
               ListEmptyComponent={
-                <View style={styles.center}>
-                  <Text style={{color: '#1e1e1e'}}>No classes scheduled 🕒</Text>
-                </View>
+                loading
+                  ? <ActivityIndicator size="large" color="#1e1e1e" />
+                  : <Text style={{color: '#1e1e1e', alignSelf: 'center'}}>No classes scheduled 🕒</Text>
               }
               contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
               style={styles.assignmentsList}
