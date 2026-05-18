@@ -2,8 +2,6 @@ import React from 'react';
 import { View, Text, StyleSheet} from 'react-native';
 
 export default function Assignments() {
-    
-
     return (
         <View style={styles.container}>
             <Text>Assignments Page</Text>
@@ -12,9 +10,9 @@ export default function Assignments() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 });
