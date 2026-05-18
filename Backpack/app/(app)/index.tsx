@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { StatusBar } from 'expo-status-bar';
+import { useFocusEffect } from 'expo-router';
 import { StyleSheet, View, Text, Button, Modal, Pressable, FlatList, ScrollView, ActivityIndicator } from 'react-native';
 import Animated, { useSharedValue, withDelay, withTiming, Easing, useAnimatedStyle } from 'react-native-reanimated';
 import { supabase } from '../../lib/supabase'
@@ -49,26 +50,19 @@ export default function Index() {
   const purpleBorder = useSharedValue(0);
   const pinkBorder = useSharedValue(0);
 
-  useEffect(() => {
-    getSchedule();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getSchedule();
+    }, [])
+  );
 
   async function getSchedule() {
     // Test connection first
+    if (!loading) setLoading(true);
     const { data, error } = await supabase.from('Schedule').select();
     
-    /*if (error) {
-      alert(`Connection failed:\n${error.message}\n\nCode: ${error.code}`);
-      return;
-    }
-
-    if (!data || data.length === 0) {
-      alert('Connected but no data returned. Check RLS policies.');
-      return;
-    }
-
-    alert(`Connected! Got ${data.length} rows:\n${JSON.stringify(data[0])}`);*/
-    setSchedule(data ?? []);
+    const sorted = (data ?? []).sort((a, b) => a.period - b.period);
+    setSchedule(sorted);
     setLoading(false);
   }
   
@@ -278,5 +272,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     margin: 10,
+    width: 150,
   }
 });

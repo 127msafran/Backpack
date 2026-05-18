@@ -14,6 +14,7 @@ import { supabase } from '../../lib/supabase';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Feather from '@expo/vector-icons/Feather';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import FormatTime from '../../components/FormatTime';
 
 type ScheduleItem = {
     id: number;
@@ -31,6 +32,7 @@ export default function Schedule() {
     const [period, setPeriod] = useState('');
     const [hours, setHours] = useState('');
     const [minutes, setMinutes] = useState('');
+    const [deleteId, setDeleteId] = useState<number | null>(null);
 
     useEffect(() => {
         getSchedule();
@@ -41,19 +43,54 @@ export default function Schedule() {
         if (!loading) setLoading(true);
         const { data, error } = await supabase.from('Schedule').select();
         
-        /*if (error) {
-            alert(`Connection failed:\n${error.message}\n\nCode: ${error.code}`);
-            return;
-        }
-
-        if (!data || data.length === 0) {
-            alert('Connected but no data returned. Check RLS policies.');
-            return;
-        }
-
-        alert(`Connected! Got ${data.length} rows:\n${JSON.stringify(data[0])}`);*/
-        setSchedule(data ?? []);
+        const sorted = (data ?? []).sort((a, b) => a.period - b.period);
+        setSchedule(sorted);
         setLoading(false);
+    }
+
+    async function addScheduleItem() {
+        setModalVisible(false);
+        const { data: { user } } = await supabase.auth.getUser();
+        
+
+        if (!user) {
+            window.alert('You must be logged in to add a class.');
+            return;
+        }
+
+        const { error } = await supabase
+            .from('Schedule')
+            .insert({
+                class: className,
+                period: Number(period),
+                time: Platform.OS === 'web' ? `${hours}:${minutes}:00` : time.toTimeString().split(' ')[0],
+                user_id: user.id
+            });
+
+        if (error) {
+            window.alert('Error: ' + error.message);
+            return;
+        }
+
+        setClassName('');
+        setPeriod('');
+        setHours('');
+        setMinutes('');
+        getSchedule(); // refresh the list
+    }
+
+    async function deleteScheduleItem(id: number) {
+        const { error } = await supabase
+            .from('Schedule')
+            .delete()
+            .eq('id', id);
+
+        if (error) {
+            window.alert('Error: ' + error.message);
+            return;
+        }
+
+        getSchedule();
     }
 
     return (
@@ -65,7 +102,15 @@ export default function Schedule() {
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={({ item }) => (
                         <View style={styles.scheduleItem}>
-                            <Text style={{color: '#d5d5d5'}}>{item.time} - {item.class}</Text>
+                            <Pressable 
+                                style={[styles.minusButton, Platform.OS === 'web' && { cursor: 'pointer' } as any]}
+                                onPress={() => setDeleteId(item.id)}
+                            >
+                                <AntDesign name="minus" size={16} color="#d5d5d5" pointerEvents="none" />
+                            </Pressable>
+                            <Text style={{color: '#d5d5d5', fontWeight: 'bold'}}>{item.class}</Text>
+                            <Text style={{color: '#d5d5d5'}}>Period {item.period}</Text>
+                            <Text style={{color: '#d5d5d5'}}><FormatTime time={item.time}/></Text>
                         </View>
                     )}
                     contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
@@ -101,7 +146,7 @@ export default function Schedule() {
                             placeholder="Period"
                             placeholderTextColor={"#808080"}
                             value={period}
-                            onChangeText={setPeriod}
+                            onChangeText={(text) => setPeriod(text.replace(/[^0-9]/g, ''))}
                         />
                         {Platform.OS === 'web' ?(
                             <View style={styles.time}>
@@ -110,7 +155,9 @@ export default function Schedule() {
                                     placeholder="HH"
                                     placeholderTextColor={"#808080"}
                                     value={hours}
-                                    onChangeText={setHours}
+                                    onChangeText={(text) => setHours(text.replace(/[^0-9]/g, ''))}
+                                    maxLength={2}
+                                    keyboardType='numeric'
                                 />
                                 <Text style={{color: '#d5d5d5'}}>:</Text>
                                 <TextInput
@@ -118,7 +165,9 @@ export default function Schedule() {
                                     placeholder="MM"
                                     placeholderTextColor={"#808080"}
                                     value={minutes}
-                                    onChangeText={setMinutes}
+                                    onChangeText={(text) => setMinutes(text.replace(/[^0-9]/g, ''))}
+                                    maxLength={2}
+                                    keyboardType='numeric'
                                 />
                             </View>
                         ) : (
@@ -130,9 +179,38 @@ export default function Schedule() {
                                 }}
                             />
                         )}
-                        <Pressable>
-                            <Text style={{color: 'blue'}}>Add</Text>
+                        <Pressable style={styles.addClassButton} onPress={addScheduleItem}>
+                            <Text style={{fontFamily: 'GoogleSans_400Regular', color: 'white'}}>Add</Text>
                         </Pressable>
+                    </View>
+                </View>
+            </Modal>
+            <Modal
+                visible={deleteId !== null}
+                transparent={true}
+                animationType='fade'
+                onRequestClose={() => setDeleteId(null)}
+            >
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalBox}>
+                        <Text style={{color: '#d5d5d5', fontWeight: 'bold', fontSize: 24, textAlign: 'center'}} >Are you sure you want to remove this class?</Text>
+                        <View style={{gap: 20, marginTop: 10}}>
+                            <Pressable
+                                onPress={() => {
+                                    if (deleteId !== null) deleteScheduleItem(deleteId);
+                                    setDeleteId(null);
+                                }}
+                                style={styles.removeAndCancel}
+                            >
+                                <Text style={{color: '#d5d5d5', fontWeight: 600}}>Remove</Text>
+                            </Pressable>
+                            <Pressable
+                                onPress={() => setDeleteId(null)}
+                                style={styles.removeAndCancel}
+                            >
+                                <Text style={{color: '#d5d5d5', fontWeight: 600}}>Cancel</Text>
+                            </Pressable>
+                        </View>
                     </View>
                 </View>
             </Modal>
@@ -155,6 +233,7 @@ const styles = StyleSheet.create({
     },
     scheduleItem: {
         justifyContent: 'center',
+        overflow: 'hidden',
         borderRadius: 5,
         backgroundColor: '#1e1e1e',
         padding: 10,
@@ -173,10 +252,10 @@ const styles = StyleSheet.create({
         right: 10,
     },
     modalOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // dark transparent background
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalBox: {
         backgroundColor: '#1e1e1e',
@@ -203,5 +282,29 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: 5
+    },
+    addClassButton: {
+        backgroundColor: 'blue',
+        padding: 10,
+        borderRadius: 5,
+        marginTop: 10
+    },
+    minusButton: {
+        position: 'absolute',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 30,
+        width: 30,
+        top: 5,
+        right: 5,
+        zIndex: 10,
+    },
+    removeAndCancel: {
+        padding: 10,
+        width: 200,
+        backgroundColor: 'blue',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 5
     }
 });

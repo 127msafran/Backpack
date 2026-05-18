@@ -42,6 +42,9 @@ export default function RootLayout() {
                     left: '20%',
                     bottom: 20,
                 },
+                tabBarLabelStyle: {
+                    fontFamily: 'GoogleSans_700Bold',
+                },
                 tabBarActiveTintColor: '#d5d5d5',
                 tabBarInactiveTintColor: '#888888'
             }}>

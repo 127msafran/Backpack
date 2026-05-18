@@ -5,6 +5,7 @@ import { Session } from '@supabase/supabase-js';
 import { useFonts, Comfortaa_400Regular, Comfortaa_700Bold } from '@expo-google-fonts/comfortaa';
 import { Nunito_400Regular, Nunito_700Bold } from '@expo-google-fonts/nunito';
 import { Anton_400Regular } from '@expo-google-fonts/anton';
+import { GoogleSans_400Regular, GoogleSans_700Bold } from '@expo-google-fonts/google-sans';
 import { Feather } from '@expo/vector-icons';
 
 export default function RootLayout() {
@@ -16,6 +17,8 @@ export default function RootLayout() {
         Nunito_400Regular,
         Nunito_700Bold,
         Anton_400Regular,
+        GoogleSans_400Regular,
+        GoogleSans_700Bold,
         ...Feather.font
     });
     const router = useRouter();
